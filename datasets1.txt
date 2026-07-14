@@ -1,0 +1,13 @@
+transaction_id,order_id,customer_id,product_category,product_name,quantity,unit_price,total_price,payment_method,store_location,LastModifiedDate
+TXN9001,ORD-501,CUST-201,Electronics,Apple iPhone 15,1,999.00,999.00,Credit Card,Delhi,2026-07-11 10:15:00
+TXN9002,ORD-502,CUST-202,Home Appliances,Samsung Microwave,1,150.00,150.00,UPI,Mumbai,2026-07-11 11:30:00
+TXN9003,ORD-503,CUST-203,Clothing,Nike Running Shoes,2,120.00,240.00,Cash,Bangalore,2026-07-11 14:00:00
+TXN9004,ORD-504,CUST-204,Electronics,Sony WH-1000XM4,1,299.00,299.00,Net Banking,Hyderabad,2026-07-12 09:45:00
+TXN9005,ORD-505,CUST-205,Books,Atomic Habits Book,3,15.00,45.00,Credit Card,Delhi,2026-07-12 16:20:00
+TXN9006,ORD-506,CUST-206,Electronics,Dell XPS 13 Laptop,1,1200.00,1200.00,UPI,Pune,2026-07-12 18:10:00
+TXN9007,ORD-507,CUST-207,Clothing,Adidas Hoodie,2,60.00,120.00,Cash,Kolkata,2026-07-13 12:05:00
+TXN9008,ORD-508,CUST-208,Home Appliances,Dyson Vacuum Cleaner,1,499.00,499.00,Credit Card,Mumbai,2026-07-13 15:35:00
+TXN9009,ORD-509,CUST-209,Beauty,L'Oreal Shampoo,5,12.00,60.00,UPI,Chennai,2026-07-14 08:22:00
+TXN9010,ORD-510,CUST-210,Electronics,Logitech MX Master 3,2,99.00,198.00,Net Banking,Bangalore,2026-07-14 19:50:00
+TXN9011,ORD-511,CUST-211,Clothing,Levi's 511 Jeans,1,80.00,80.00,Credit Card,Delhi,2026-07-14 21:10:00
+TXN9012,ORD-512,CUST-212,Books,Sapiens Hardcover,2,22.00,44.00,UPI,Mumbai,2026-07-14 23:45:00

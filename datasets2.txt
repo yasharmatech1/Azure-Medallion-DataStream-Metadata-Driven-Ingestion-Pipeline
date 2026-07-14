@@ -1,0 +1,5 @@
+transaction_id,order_id,customer_id,product_category,product_name,quantity,unit_price,total_price,payment_method,store_location,LastModifiedDate
+TXN9013,ORD-513,CUST-213,Electronics,iPad Air,1,599.00,599.00,Credit Card,Delhi,2026-07-15 02:10:00
+TXN9014,ORD-514,CUST-214,Beauty,Mac Lipstick,2,35.00,70.00,UPI,Mumbai,2026-07-15 03:45:00
+TXN9015,ORD-515,CUST-215,Home Appliances,Philips Air Fryer,1,120.00,120.00,Cash,Bangalore,2026-07-15 05:20:00
+TXN9003,ORD-503,CUST-203,Clothing,Nike Running Shoes,2,120.00,240.00,Cash,Bangalore,2026-07-15 06:00:00
