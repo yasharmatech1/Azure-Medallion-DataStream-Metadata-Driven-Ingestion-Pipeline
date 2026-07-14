@@ -1,0 +1,9 @@
+{
+    "name": "ls_azure_keyvault",
+    "properties": {
+        "type": "AzureKeyVault",
+        "typeProperties": {
+            "baseUrl": "https://kv-prod-de-project.vault.azure.net/"
+        }
+    }
+}
