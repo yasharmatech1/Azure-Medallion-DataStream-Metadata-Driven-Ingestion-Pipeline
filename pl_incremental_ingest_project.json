@@ -1,0 +1,91 @@
+{
+    "name": "pl_incremental_ingest",
+    "properties": {
+        "activities": [
+            {
+                "name": "GetTableMetadataList",
+                "type": "Lookup",
+                "dependsOn": [],
+                "policy": { "timeout": "0.12:00:00", "retry": 0 },
+                "typeProperties": {
+                    "source": {
+                        "type": "AzureSqlSource",
+                        "sqlReaderQuery": "SELECT table_name FROM watermark_table"
+                    },
+                    "dataset": { "referenceName": "ds_source_sql_metadata", "type": "DatasetReference" },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "ForEachTableExecution",
+                "type": "ForEach",
+                "dependsOn": [ { "activity": "GetTableMetadataList", "dependencyConditions": [ "Succeeded" ] } ],
+                "typeProperties": {
+                    "items": { "value": "@activity('GetTableMetadataList').output.value", "type": "Expression" },
+                    "isSequential": false,
+                    "activities": [
+                        {
+                            "name": "GetOldWatermark",
+                            "type": "Lookup",
+                            "typeProperties": {
+                                "source": {
+                                    "type": "AzureSqlSource",
+                                    "sqlReaderQuery": "@concat('SELECT last_watermark_value FROM watermark_table WHERE table_name = ''', item().table_name, '''')"
+                                },
+                                "dataset": { "referenceName": "ds_source_sql_metadata", "type": "DatasetReference" }
+                            }
+                        },
+                        {
+                            "name": "GetNewWatermark",
+                            "type": "Lookup",
+                            "typeProperties": {
+                                "source": {
+                                    "type": "AzureSqlSource",
+                                    "sqlReaderQuery": "@concat('SELECT MAX(LastModifiedDate) as NewWatermark FROM ', item().table_name)"
+                                },
+                                "dataset": { "referenceName": "ds_source_sql_metadata", "type": "DatasetReference" }
+                            }
+                        },
+                        {
+                            "name": "IncrementalCopyData",
+                            "type": "Copy",
+                            "dependsOn": [
+                                { "activity": "GetOldWatermark", "dependencyConditions": [ "Succeeded" ] },
+                                { "activity": "GetNewWatermark", "dependencyConditions": [ "Succeeded" ] }
+                            ],
+                            "typeProperties": {
+                                "source": {
+                                    "type": "AzureSqlSource",
+                                    "sqlReaderQuery": "@concat('SELECT * FROM ', item().table_name, ' WHERE LastModifiedDate > ''', activity('GetOldWatermark').output.firstRow.last_watermark_value, ''' AND LastModifiedDate <= ''', activity('GetNewWatermark').output.firstRow.NewWatermark, '''')"
+                                },
+                                "sink": {
+                                    "type": "ParquetSink",
+                                    "storeSettings": { "type": "AzureBlobFSWriteSettings" }
+                                }
+                            },
+                            "inputs": [ { "referenceName": "ds_source_sql_generic", "type": "DatasetReference" } ],
+                            "outputs": [ {
+                                    "referenceName": "ds_adls_landing_parquet",
+                                    "type": "DatasetReference",
+                                    "parameters": { "DirectoryName": "@item().table_name" }
+                                } ]
+                        },
+                        {
+                            "name": "UpdateWatermarkTable",
+                            "type": "SqlServerStoredProcedure",
+                            "dependsOn": [ { "activity": "IncrementalCopyData", "dependencyConditions": [ "Succeeded" ] } ],
+                            "typeProperties": {
+                                "storedProcedureName": "usp_write_watermark",
+                                "storedProcedureParameters": {
+                                    "TableName": { "value": "@item().table_name", "type": "String" },
+                                    "NewWatermark": { "value": "@activity('GetNewWatermark').output.firstRow.NewWatermark", "type": "DateTime" }
+                                }
+                            },
+                            "linkedServiceName": { "referenceName": "ls_source_sql_db", "type": "LinkedServiceReference" }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
